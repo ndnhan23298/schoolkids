@@ -1,0 +1,57 @@
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { DeleteResult, Repository } from "typeorm";
+import { Fee } from "./models/fees.schema";
+
+@Injectable()
+export class FeeService {
+    constructor(
+        @InjectRepository(Fee)
+        private feeRepos: Repository<Fee>
+    ) { }
+
+    async findMany({
+        query
+    }): Promise<Fee[]> {
+        const res = await this.feeRepos.find({
+            where: query
+        })
+        return res
+    }
+
+    async findOne(id): Promise<Fee> {
+        return await this.feeRepos.findOne(id)
+    }
+
+    async create(data: Fee): Promise<Fee> {
+        return await this.feeRepos.save(data)
+    }
+
+    async update(updateData: Fee, id): Promise<Fee> {
+        try {
+            const fee = await this.feeRepos.findOne(id)
+            if (!fee) {
+                throw new NotFoundException('ClassNotFound')
+            }
+            const updateFee = await this.feeRepos.save({
+                ...fee,
+                ...updateData
+            })
+            return updateFee
+        } catch (error) {
+            return Promise.reject(error)
+        }
+    }
+
+    async delete(id): Promise<DeleteResult> {
+        try {
+            const fee = await this.feeRepos.findOne(id)
+            if (!fee) {
+                throw new NotFoundException('ClassNotFound')
+            }
+            return await this.feeRepos.delete(id)
+        } catch (error) {
+            return Promise.reject(error)
+        }
+    }
+}
