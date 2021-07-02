@@ -2,12 +2,18 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards, UseP
 import { AuthGuard } from "@nestjs/passport";
 import { scopes } from "src/constants/scopes";
 import { Scopes } from "src/middlewares/authz";
+import { ClassService } from "../classes/classes.service";
+import { StudentService } from "../students/students.service";
 import { FeeService } from "./fees.service";
 import { Fee } from "./models/fees.schema";
 
 @Controller('fees')
 export class FeeController {
-    constructor(private feeService: FeeService) { }
+    constructor(
+        private feeService: FeeService,
+        private classService: ClassService,
+        private studentService: StudentService
+    ) { }
 
     @Get(':id')
     async findOne(@Param() id) {
@@ -38,11 +44,20 @@ export class FeeController {
 
     @Post('')
     async create(@Body() fee: Fee) {
-        return await this.feeService.create(fee)
+        const { studentID } = fee;
+        const classID = await (await this.studentService.findOne(studentID)).classID;
+        const fees = await (await this.classService.findOne(classID)).fee;
+
+        return await this.feeService.create({
+            ...fee,
+            fee: fees,
+            classID,
+            status: 'Not Yet'
+        })
     }
 
     @Put(':id')
-    async update(@Body() updateFee: Fee, @Param() id) {
+    async update(@Body() updateFee: Fee, @Param() { id }) {
         return await this.feeService.update(updateFee, id);
     }
 

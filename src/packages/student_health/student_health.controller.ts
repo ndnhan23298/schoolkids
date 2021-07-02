@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from "@nestjs/common";
 import { StudentHealth } from "./models/student_health.schema";
 import { StudentHealthService } from "./student_health.service";
 
@@ -6,14 +6,21 @@ import { StudentHealthService } from "./student_health.service";
 export class StudentHealthController {
     constructor(private studentHealthService: StudentHealthService) { }
 
-    @Get('')
-    async findAll() {
-        return await this.studentHealthService.findAll()
-    }
+    // @Get('')
+    // async findAll() {
+    //     return await this.studentHealthService.findAll()
+    // }
 
     @Get(':id')
     async findOne(@Param() id) {
         return await this.studentHealthService.findOne(id)
+    }
+
+    @Get('')
+    async findHealth(@Query() query) {
+        return await this.studentHealthService.findMany({
+            query,
+        })
     }
 
     @Put(':id')
@@ -23,7 +30,11 @@ export class StudentHealthController {
 
     @Post('')
     async create(@Body() studentHealth: StudentHealth) {
-        return await this.studentHealthService.create(studentHealth)
+        const checkedAt = new Date().toLocaleDateString();
+        return await this.studentHealthService.create({
+            ...studentHealth,
+            checkedAt
+        })
     }
 
     @Delete(':id')

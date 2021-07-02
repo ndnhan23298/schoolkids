@@ -23,7 +23,18 @@ export class AlbumController {
 
     @Put(':id')
     async update(@Body() album: Album, @Param() id) {
-        return await this.albumService.update(album, id)
+        const listImg = await this.albumService.findOne(id);
+
+        const { images } = listImg;
+
+        const { images: updateImages, ...updateData } = album;
+
+        images.push(...updateImages);
+
+        return await this.albumService.update({
+            images,
+            ...updateData
+        }, id)
     }
 
     @Post('')

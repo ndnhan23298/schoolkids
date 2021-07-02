@@ -32,14 +32,17 @@ export class AlbumService {
 
     async update(updateData: Album, id): Promise<Album> {
         try {
-            const album = await this.albumRepos.findOne(id)
+            const album = await this.albumRepos.findOne(id);
+
             if (!album) {
-                throw new NotFoundException('AlbumNotFound')
+                throw new NotFoundException('AlbumNotFound');
             }
+
             const updateAlbum = await this.albumRepos.save({
                 ...album,
                 ...updateData
             })
+
             return updateAlbum
         } catch (error) {
             return Promise.reject(error)

@@ -9,5 +9,5 @@ export class Class {
     name: string;
 
     @Column()
-    grade: string
+    fee: string
 }

@@ -13,6 +13,9 @@ import { CloudinaryModule } from './packages/images/images.module';
 import { ParticipantModule } from './packages/participants/participants.module';
 import { AlbumModule } from './packages/albums/albums.module';
 import { FeeModule } from './packages/fees/fees.module';
+import { StudentHealthModule } from './packages/student_health/student_health.module';
+import { LeaveDayModule } from './packages/leave_days/leave_module';
+import { FirebaseModule } from './packages/firebase/firebase.module';
 
 @Module({
   imports: [
@@ -40,7 +43,10 @@ import { FeeModule } from './packages/fees/fees.module';
     CloudinaryModule,
     ParticipantModule,
     AlbumModule,
-    FeeModule
+    FeeModule,
+    StudentHealthModule,
+    LeaveDayModule,
+    FirebaseModule
   ],
 })
 export class AppModule { }

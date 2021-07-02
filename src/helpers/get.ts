@@ -81,7 +81,7 @@ export const getRoleAccess = (access: UserAccess[]): GetRoleAccess => {
 
 
         if (each.schoolId) {
-            schoolIds.push(each.classId)
+            schoolIds.push(each.schoolId)
 
             schoolScopes.push({
                 schoolId: each.schoolId,

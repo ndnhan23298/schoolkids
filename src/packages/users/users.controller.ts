@@ -40,6 +40,7 @@ export class UserController {
 
         const { studentIds, classIds, schoolIds, userId } = user;
 
+
         const [currentUser, students, classes, schools] = await Promise.all([
             this.userService.findOne({
                 id: userId,
@@ -60,7 +61,7 @@ export class UserController {
                 }
             }),
         ]);
-        
+
         return {
             ...currentUser,
             classes,

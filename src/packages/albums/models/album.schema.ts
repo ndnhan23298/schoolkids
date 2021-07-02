@@ -11,7 +11,7 @@ export class Album {
     name: string;
 
     @Column({ type: 'simple-array', nullable: true })
-    images: string;
+    images: string[];
 
     @OneToOne(() => Class, classs => classs.id, { onDelete: 'NO ACTION' })
     @JoinColumn({ name: 'classID' })

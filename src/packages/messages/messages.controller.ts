@@ -46,14 +46,26 @@ export class MessageController {
     @Post('')
     @UseGuards(AuthGuard('jwt'))
     async create(@Body() message: MessageDto, @Request() { user }) {
+
         const sender = user.userId;
-        const newMessage = await this.messageService.create({ ...message, sender })
 
-        this.socketGateway.server.to(message.target).emit('serverSendMessage', newMessage)
+        const newMessage = await this.messageService.create({ ...message, sender });
 
-        this.socketGateway.server.to(sender).emit('serverSendMessage', newMessage)
+        const data = await this.messageService.findOne(newMessage.id);
 
-        return newMessage
+        if (sender === message.target) {
+            this.socketGateway.server.to(message.target).emit('message', data);
+
+            return data
+        }
+
+        this.socketGateway.server.to(message.target).emit('message', data);
+
+        this.socketGateway.server.to(message.target).emit('notification', data);
+
+        this.socketGateway.server.to(sender).emit('message', data);
+
+        return data
     }
 
     @Delete(':id')

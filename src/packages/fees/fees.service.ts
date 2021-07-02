@@ -7,14 +7,15 @@ import { Fee } from "./models/fees.schema";
 export class FeeService {
     constructor(
         @InjectRepository(Fee)
-        private feeRepos: Repository<Fee>
+        private feeRepos: Repository<Fee>,
     ) { }
 
     async findMany({
         query
     }): Promise<Fee[]> {
         const res = await this.feeRepos.find({
-            where: query
+            where: query,
+            relations: ['studentID']
         })
         return res
     }
@@ -24,6 +25,7 @@ export class FeeService {
     }
 
     async create(data: Fee): Promise<Fee> {
+
         return await this.feeRepos.save(data)
     }
 
@@ -31,8 +33,9 @@ export class FeeService {
         try {
             const fee = await this.feeRepos.findOne(id)
             if (!fee) {
-                throw new NotFoundException('ClassNotFound')
+                throw new NotFoundException('FeeNotFound')
             }
+
             const updateFee = await this.feeRepos.save({
                 ...fee,
                 ...updateData
@@ -47,7 +50,7 @@ export class FeeService {
         try {
             const fee = await this.feeRepos.findOne(id)
             if (!fee) {
-                throw new NotFoundException('ClassNotFound')
+                throw new NotFoundException('FeeNotFound')
             }
             return await this.feeRepos.delete(id)
         } catch (error) {

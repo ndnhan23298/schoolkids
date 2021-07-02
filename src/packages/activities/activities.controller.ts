@@ -1,14 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from "@nestjs/common";
 import { ActivityService } from "./activities.service";
 import { Activity } from "./models/activities.schema";
 
 @Controller('activities')
 export class ActivityController {
     constructor(private activityService: ActivityService) { }
-
     @Get('')
-    async findAll() {
-        return await this.activityService.findAll();
+    async findAll(
+        @Query() { studentID }
+    ) {
+        return await this.activityService.getHasJoinedActivities({
+            query: { studentID }
+        });
     }
 
     @Get(':id')

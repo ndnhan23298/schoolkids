@@ -1,24 +1,27 @@
 import { Class } from "src/packages/classes/models/classes.schema";
 import { Student } from "src/packages/students/models/students.schema";
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class Fee {
+export class LeaveDay {
     @PrimaryGeneratedColumn('uuid')
     id: number;
 
     @Column()
-    fee: string;
+    firstDay: string;
 
     @Column()
-    month: string
+    lastDay: string;
 
     @Column()
-    status: string
+    content: string;
+
+    @Column()
+    daysOff: number;
 
     @ManyToOne(() => Student, student => student.id, { onDelete: 'NO ACTION' })
     @JoinColumn({ name: 'studentID' })
-    @Column({ type: 'varchar', nullable: true })
+    @Column({ type: 'varchar' })
     studentID: string
 
     @ManyToOne(() => Class, classs => classs.id, { onDelete: 'NO ACTION' })

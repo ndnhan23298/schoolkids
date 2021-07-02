@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from "@nestjs/common";
 import { Participant } from "./models/participant.schema";
 import { ParticipantService } from "./participant.service";
 
@@ -6,9 +6,16 @@ import { ParticipantService } from "./participant.service";
 export class ParticipantController {
     constructor(private participantService: ParticipantService) { }
 
+    // @Get('')
+    // async findAll() {
+    //     return await this.participantService.findAll()
+    // }
+
     @Get('')
-    async findAll() {
-        return await this.participantService.findAll()
+    async findHealth(@Query() query) {
+        return await this.participantService.findMany({
+            query,
+        })
     }
 
     @Get(':id')

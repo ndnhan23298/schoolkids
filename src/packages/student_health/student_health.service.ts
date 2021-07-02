@@ -18,8 +18,19 @@ export class StudentHealthService {
         return await this.studentHealthRepos.findOne(id);
     }
 
+    async findMany({
+        query
+    }): Promise<StudentHealth[]> {
+        const res = await this.studentHealthRepos.find({
+            where: query,
+            // relations: ['studentID']
+        })
+        return res
+    }
+
+
     async create(studentHealth: StudentHealth): Promise<StudentHealth> {
-        return await this.studentHealthRepos.create(studentHealth);
+        return await this.studentHealthRepos.save(studentHealth);
     }
 
     async update(updateData: StudentHealth, id): Promise<StudentHealth> {

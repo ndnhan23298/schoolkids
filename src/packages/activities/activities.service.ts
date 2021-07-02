@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { DeleteResult, Repository } from "typeorm";
+import { DeleteResult, In, Not, Repository } from "typeorm";
 import { Activity } from "./models/activities.schema";
 
 @Injectable()
@@ -45,6 +45,38 @@ export class ActivityService {
                 throw new NotFoundException('ActivityNotFound');
             }
             return await this.activityRepos.delete(id)
+        } catch (error) {
+            return Promise.reject(error)
+        }
+    }
+
+    async getHasJoinedActivities({ query }): Promise<any> {
+        try {
+            const { studentID } = query
+
+            let activityIDsHasJoined = await this.activityRepos.query(`
+                SELECT activityID FROM participant where studentID = ?
+            `, [studentID])
+
+            activityIDsHasJoined = activityIDsHasJoined.map(each => each.activityID)
+
+            const [joinedActivities, otherActivities] = await Promise.all([
+                this.activityRepos.find({
+                    where: {
+                        id: In(activityIDsHasJoined)
+                    }
+                }),
+                this.activityRepos.find({
+                    where: {
+                        id: Not(In(activityIDsHasJoined))
+                    }
+                }),
+            ])
+
+            return {
+                joinedActivities,
+                activities: otherActivities
+            }
         } catch (error) {
             return Promise.reject(error)
         }

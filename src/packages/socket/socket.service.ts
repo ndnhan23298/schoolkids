@@ -21,4 +21,5 @@ export class SocketGateway {
 
         client.join(userId)
     }
+
 }

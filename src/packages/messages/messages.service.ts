@@ -40,7 +40,12 @@ export class MessageService {
     }
 
     async findOne(id): Promise<Message> {
-        return await this.messageRepos.findOne(id);
+        return await this.messageRepos.findOne({
+            where: {
+                id
+            },
+            relations: ['sender', 'target'],
+        });
     }
 
     async create(message: MessageInterface): Promise<Message> {

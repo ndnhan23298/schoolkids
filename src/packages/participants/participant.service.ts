@@ -10,16 +10,25 @@ export class ParticipantService {
         private participantRepos: Repository<Participant>
     ) { }
 
-    async findAll(): Promise<Participant[]> {
-        return await this.participantRepos.find();
-    }
+    // async findAll(): Promise<Participant[]> {
+    //     return await this.participantRepos.find();
+    // }
 
     async findOne(id): Promise<Participant> {
         return await this.participantRepos.findOne(id);
     }
 
+    async findMany({
+        query,
+    }): Promise<Participant[]> {
+        return await this.participantRepos.find({
+            where: query,
+            relations: ['studentID']
+        });
+    }
+
     async create(participant: Participant): Promise<Participant> {
-        return await this.participantRepos.create(participant);
+        return await this.participantRepos.save(participant);
     }
 
     async update(updateData: Participant, id): Promise<Participant> {
